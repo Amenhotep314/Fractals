@@ -24,3 +24,32 @@ class Text_Wrapper_Reader():
 
         length = 2 + len(tag)
         return line[line.index('<' + tag + '>') + length : line.index('</' + tag + '>')]
+
+
+def get_file(extension):
+
+    from os import listdir
+
+    files = []
+    for file in listdir():
+        if file.endswith('.' + extension):
+            files.append(file)
+
+    if len(files) == 0:
+        print("No files with the extension \"" + extension + "\" found.")
+        return False
+    
+    while True:
+        print("Select a file (1 - " + str(len(files)) + "):")
+        for i, file in enumerate(files):
+            print(str(i + 1) + '. ' + file)
+        choice = input('>>> ')
+
+        try:
+            choice = int(choice)
+            if(choice > 0 and choice <= len(files)):
+                return file[choice - 1]
+            else:
+                print("That's not one of the choices.")
+        except ValueError:
+            print("Please enter a number.")
