@@ -19,8 +19,8 @@ def render_set(data):
     res = data.res
 
     for pixel in data.pixels:
-        x = pixel(0)
-        y = pixel(1)
+        x = pixel[0]
+        y = pixel[1]
         canvas.create_rectangle(x, y, x+res, y+res, fill='#FF00FF', outline='')
 
     window.mainloop()
