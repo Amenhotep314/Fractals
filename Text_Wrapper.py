@@ -21,4 +21,6 @@ class Text_Wrapper_Reader():
 
     
     def read_meta(self, line, tag):
-        return line[line.index('<' + tag + '>') + (2 + len(tag)) : line.index('</' + tag + '>'))]
+
+        length = 2 + len(tag)
+        return line[line.index('<' + tag + '>') + length : line.index('</' + tag + '>')]

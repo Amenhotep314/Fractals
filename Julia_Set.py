@@ -1,13 +1,5 @@
-from tkinter import *
+from tkinter import Tk, Canvas
 from random import randint
-
-
-width = 400
-height = 400
-
-window = Tk()
-canvas = Canvas(window, width=width, height=height)
-canvas.pack()
 
 
 def main():
@@ -15,20 +7,24 @@ def main():
     for i in range(width):
         for j in range(height):
             fill = random_color()
-            print(fill + "\t" + str(i) + ' x ' + str(j))
-            canvas.create_rectangle(i, j, i, j, fill=fill, outline='')
-            
+            print(fill + "\t" + str(i) + ' x ' + str(j))        
 
 
-def random_color():
+def render_set(data):
 
-    r = format(randint(0, 255), '02x')
-    g = format(randint(0, 255), '02x')
-    b = format(randint(0, 255), '02x')
+    window = Tk()
+    canvas = Canvas(window, width=data.width, height=data.height)
+    canvas.pack()
 
-    return '#' + r + g + b
+    res = data.res
+
+    for pixel in data.pixels:
+        x = pixel(0)
+        y = pixel(1)
+        canvas.create_rectangle(x, y, x+res, y+res, fill='#FF00FF', outline='')
+
+    window.mainloop()
 
 
 if __name__ == "__main__":
     main()
-    window.mainloop()
