@@ -11,14 +11,14 @@ class Text_Wrapper_Reader():
         self.pixels = []
         for line in self.file:
             if '<x>' in line:
-                x = int(read_meta(line, 'x'))
-                y = int(read_meta(line, 'y'))
-                pixels.append([x, y])
+                x = int(self.read_meta(line, 'x'))
+                y = int(self.read_meta(line, 'y'))
+                self.pixels.append([x, y])
 
         info = self.file[0]
-        self.width = int(read_meta(info, 'width'))
-        self.height = int(read_meta(info, 'height'))
-        self.res = int(read_meta(info, 'res'))
+        self.width = int(self.read_meta(info, 'width'))
+        self.height = int(self.read_meta(info, 'height'))
+        self.res = int(self.read_meta(info, 'res'))
 
     
     def read_meta(self, line, tag):
@@ -41,23 +41,23 @@ class Text_Wrapper_Writer():
         file = open(self.filename, 'w')
         file.close()
 
-        write_meta(self.width, "width", newline=False)
-        write_meta(self.height, "height", newline=False)
-        write_meta(self.xscale, "xscale", newline=False)
-        write_meta(self.yscale, "yscale", newline=False)
-        write_meta(self.res, "res")
+        self.write_meta(self.width, "width", newline=False)
+        self.write_meta(self.height, "height", newline=False)
+        self.write_meta(self.xscale, "xscale", newline=False)
+        self.write_meta(self.yscale, "yscale", newline=False)
+        self.write_meta(self.res, "res")
 
     
     def write_pixel(self, x, y):
 
-        write_meta(str(x), 'x', newline=False)
-        write_meta(str(y), 'y')
+        self.write_meta(str(x), 'x', newline=False)
+        self.write_meta(str(y), 'y')
 
     
     def write_meta(self, item, tag, newline=True):
 
         with open(self.filename, "a") as target:
-            target.write("<" + tag + ">" + item + "</" + tag + ">")
+            target.write("<" + tag + ">" + str(item) + "</" + tag + ">")
             if newline:
                 target.write('\n')
 
