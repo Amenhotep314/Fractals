@@ -13,7 +13,8 @@ class Text_Wrapper_Reader():
             if '<x>' in line:
                 x = int(self.read_meta(line, 'x'))
                 y = int(self.read_meta(line, 'y'))
-                self.pixels.append([x, y])
+                depth = int(self.read_meta(line, 'depth'))
+                self.pixels.append([x, y, depth])
 
         info = self.file[0]
         self.width = int(self.read_meta(info, 'width'))
@@ -50,10 +51,11 @@ class Text_Wrapper_Writer():
         self.write_meta(self.c, "c")
 
     
-    def write_pixel(self, x, y):
+    def write_pixel(self, x, y, depth):
 
         self.write_meta(str(x), 'x', newline=False)
-        self.write_meta(str(y), 'y')
+        self.write_meta(str(y), 'y', newline=False)
+        self.write_meta(str(depth), 'depth')
 
     
     def write_meta(self, item, tag, newline=True):
