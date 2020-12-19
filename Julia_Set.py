@@ -7,6 +7,7 @@ import Text_Wrapper
 
 def main():
 
+    while True:
     print("Welcome to Julia Set Generator/Renderer")
     choice = Util.get_choice(["Generate a set", "Render a set", "Help!"], "What would you like to do?")
 
