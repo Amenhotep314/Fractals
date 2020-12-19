@@ -20,7 +20,28 @@ def main():
 
 def generate_set():
 
-    print("ICH BIN ICH!")
+    width = Util.get_number("Width of set in pixels", bound=1920)
+    height = Util.get_number("Height of set in pixels", bound=1080)
+    xscale = Util.get_number("Distance from origin to x-extremes")
+    yscale = Util.get_number("Distance from origin to y-extremes")
+    res = Util.get_number("Resolution (0 checks one pixel at a time, 1 checks 4, 2 checks 9, ...)", bound=1079)
+    filename = Util.get_string("File to save set to")
+    java = bool(Util.get_choice(["No", "Yes"], "Generate using Java?"))
+    target = Text_Wrapper.Text_Wrapper_Writer(filename, width, height, xscale, yscale, res)
+
+    x = 0
+    while x <= width:
+        y = 0
+        while y <= height:
+            to_complex(x, y, target)
+
+
+def to_complex(x, y, target):
+
+    real = (((2 * target.xscale) / target.width) * x) - target.xscale
+    imaginary = (((2 * target.yscale) / target.height) * y) - target.yscale
+    return complex(real, imaginary)
+
 
 
 def render_set():
