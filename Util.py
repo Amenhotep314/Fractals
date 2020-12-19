@@ -16,14 +16,17 @@ def get_choice(options, prompt):
             print("Please enter a number.")
 
 
-def get_number(prompt, bound=0, require_positive=True):
+def get_number(prompt, bound=0, require_positive=True, use_float=False):
 
     while True:
         print(prompt)
         choice = input('>>> ')
 
         try:
-            choice = int(choice)
+            if use_float:
+                choice = float(choice)
+            else:
+                choice = int(choice)
             if bound != 0 and choice > bound:
                 print("That value is too high.")
             elif require_positive and choice < 0:
