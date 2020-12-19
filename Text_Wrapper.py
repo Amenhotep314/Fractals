@@ -10,7 +10,7 @@ class Text_Wrapper_Reader():
 
         self.pixels = []
         for line in self.file:
-            if line.index('<x>') != -1:
+            if '<x>' in line:
                 x = int(read_meta(line, 'x'))
                 y = int(read_meta(line, 'y'))
                 pixels.append([x, y])

@@ -18,9 +18,14 @@ def main():
         help()
 
 
+def generate_set():
+
+    print("ICH BIN ICH!")
+
+
 def render_set():
 
-    data = Text_Wrapper_Reader(get_file())
+    data = Text_Wrapper_Reader(get_file('py'))
     window = Tk()
     canvas = Canvas(window, width=data.width, height=data.height)
     canvas.pack()
