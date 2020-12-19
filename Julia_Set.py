@@ -24,7 +24,7 @@ def generate_set():
     width = Util.get_number("Width of set in pixels", bound=1920)
     height = Util.get_number("Height of set in pixels", bound=1080)
     res = Util.get_number("Resolution (0 checks one pixel at a time, 1 checks 4, 2 checks 9, ...)", bound=1079)
-    c = Util.get_number("C value", require_positive=False, use_float=True)
+    c = Util.get_complex("C value")
     filename = Util.get_string("File to save set to")
     java = bool(Util.get_choice(["No", "Yes"], "Generate using Java?"))
     target = Text_Wrapper.Text_Wrapper_Writer(filename, width, height, res, c)
@@ -53,7 +53,7 @@ def is_in_set(imaginary_num, depth, target):
     
     # https://en.wikipedia.org/wiki/Julia_set#Pseudocode_for_normal_Julia_sets
     result = imaginary_num ** 2 + target.c
-    if (result.real ** 2 + result.imag ** 2 <= 4) and depth < 1000:
+    if (result.real ** 2 + result.imag ** 2 <= 4) and depth < 900:
         return(is_in_set(result, depth + 1, target))
     else:
         if depth < 1000:

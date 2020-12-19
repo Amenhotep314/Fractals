@@ -16,17 +16,14 @@ def get_choice(options, prompt):
             print("Please enter a number.")
 
 
-def get_number(prompt, bound=0, require_positive=True, use_float=False):
+def get_number(prompt, bound=0, require_positive=True):
 
     while True:
         print(prompt)
         choice = input('>>> ')
 
         try:
-            if use_float:
-                choice = float(choice)
-            else:
-                choice = int(choice)
+            choice = int(choice)
             if bound != 0 and choice > bound:
                 print("That value is too high.")
             elif require_positive and choice < 0:
@@ -35,6 +32,21 @@ def get_number(prompt, bound=0, require_positive=True, use_float=False):
                 return choice
         except ValueError:
             print("Please enter a number.")
+
+
+def get_complex(prompt):
+
+    while True:
+        print(prompt)
+        real = input('Real part\n>>> ')
+        imaginary = input('Imaginary part\n>>> ')
+
+        try:
+            choice = complex(float(real), float(imaginary))
+            return choice
+        except ValueError:
+            print("Please enter numbers.")
+        
 
 
 def get_string(prompt):
