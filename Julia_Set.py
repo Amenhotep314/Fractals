@@ -70,12 +70,19 @@ def render_set():
     canvas = Canvas(window, width=data.width, height=data.height)
     canvas.pack()
 
+    max_depth = 0
+    for pixel in data.pixels:
+        if pixel[2] > max_depth:
+            max_depth = pixel[2]
+    grayscale = 255 / max_depth
+
     res = data.res
 
     for pixel in data.pixels:
         x = pixel[0]
         y = pixel[1]
-        canvas.create_rectangle(x, y, x+res, y+res, fill='#FF00FF', outline='')
+        fill_color = format(int(255 - (pixel[2] * grayscale)), '02x')
+        canvas.create_rectangle(x, y, x+res, y+res, fill='#FF00'+fill_color, outline='')
 
     window.mainloop()
 
