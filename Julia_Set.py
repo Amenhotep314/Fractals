@@ -8,15 +8,15 @@ import Text_Wrapper
 def main():
 
     while True:
-    print("Welcome to Julia Set Generator/Renderer")
-    choice = Util.get_choice(["Generate a set", "Render a set", "Help!"], "What would you like to do?")
+        print("Welcome to Julia Set Generator/Renderer")
+        choice = Util.get_choice(["Generate a set", "Render a set", "Help!"], "What would you like to do?")
 
-    if choice == 0:
-        generate_set()
-    elif choice == 1:
-        render_set()
-    else:
-        help()
+        if choice == 0:
+            generate_set()
+        elif choice == 1:
+            render_set()
+        else:
+            help()
 
 
 def generate_set():
@@ -28,7 +28,6 @@ def generate_set():
     filename = Util.get_string("File to save set to")
     java = bool(Util.get_choice(["No", "Yes"], "Generate using Java?"))
     target = Text_Wrapper.Text_Wrapper_Writer(filename, width, height, res, c)
-    print(target.escape)
 
     x = 0
     while x <= width:
@@ -45,8 +44,8 @@ def generate_set():
 
 def to_complex(x, y, target):
     
-    real = (((2 * target.escape) / target.width) * x) - target.escape
-    imaginary = (((2 * target.escape) / target.height) * y) - target.escape
+    real = ((4 / target.width) * x) - 2
+    imaginary = ((4 / target.height) * y) - 2
     return complex(real, imaginary)
 
 
@@ -54,7 +53,7 @@ def is_in_set(imaginary_num, depth, target):
     
     # https://en.wikipedia.org/wiki/Julia_set#Pseudocode_for_normal_Julia_sets
     result = imaginary_num ** 2 + target.c
-    if (result.real + result.imag <= target.escape) and depth < 1000:
+    if (result.real ** 2 + result.imag ** 2 <= 4) and depth < 1000:
         return(is_in_set(result, depth + 1, target))
     else:
         if depth < 1000:

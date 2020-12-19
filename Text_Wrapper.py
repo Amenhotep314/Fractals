@@ -46,9 +46,7 @@ class Text_Wrapper_Writer():
         self.write_meta(self.width, "width", newline=False)
         self.write_meta(self.height, "height", newline=False)
         self.write_meta(self.res, "res", newline=False)
-        self.write_meta(self.c, "c")
-
-        self.escape = (1 + sqrt(1 + (4 * sqrt((abs(self.c) * (self.width ** 2)) + (abs(self.c) * (self.height ** 2)))))) / 2
+        self.write_meta(self.c, "c", newline=False)
 
     
     def write_pixel(self, x, y, depth):
