@@ -36,6 +36,7 @@ def generate_set():
             in_set = is_in_set(imaginary_num, 0, target)
             if in_set:
                 target.write_pixel(x, y, in_set)
+            print(str(int(((x * width) / (width * height)) * 100)) + "%", end='\r')
 
             y += (1 + target.res)
         x += (1 + target.res)
