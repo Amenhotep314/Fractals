@@ -18,8 +18,6 @@ class Text_Wrapper_Reader():
         info = self.file[0]
         self.width = int(read_meta(info, 'width'))
         self.height = int(read_meta(info, 'height'))
-        self.xscale = int(read_meta(info, 'xscale'))
-        self.yscale = int(read_meta(info, 'yscale'))
         self.res = int(read_meta(info, 'res'))
 
     
