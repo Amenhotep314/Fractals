@@ -26,8 +26,10 @@ def get_number(prompt, bound=0, require_positive=True):
             choice = int(choice)
             if bound != 0 and choice > bound:
                 print("That value is too high.")
-            if require_positive and choice < 0:
+            elif require_positive and choice < 0:
                 print("Your input must be positive.")
+            else:
+                return choice
         except ValueError:
             print("Please enter a number.")
 
