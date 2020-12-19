@@ -1,14 +1,14 @@
 from tkinter import Tk, Canvas
 from random import randint
 
-from Text_Wrapper import Text_Wrapper_Reader, get_file
-from Util import get_choice
+import Util
+import Text_Wrapper
 
 
 def main():
 
     print("Welcome to Julia Set Generator/Renderer")
-    choice = get_choice(["Generate a set", "Render a set", "Help!"], "What would you like to do?")
+    choice = Util.get_choice(["Generate a set", "Render a set", "Help!"], "What would you like to do?")
 
     if choice == 0:
         generate_set()
@@ -25,7 +25,7 @@ def generate_set():
 
 def render_set():
 
-    data = Text_Wrapper_Reader(get_file('py'))
+    data = Text_Wrapper.Text_Wrapper_Reader(Text_Wrapper.get_file('set'))
     window = Tk()
     canvas = Canvas(window, width=data.width, height=data.height)
     canvas.pack()
