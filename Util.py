@@ -31,3 +31,10 @@ def get_number(prompt, bound=0, require_positive=True):
         except ValueError:
             print("Please enter a number.")
 
+
+def get_string(prompt):
+
+    print(prompt)
+    choice = input('>>> ')
+    return choice
+
