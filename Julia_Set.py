@@ -25,23 +25,43 @@ def generate_set():
     xscale = Util.get_number("Distance from origin to x-extremes")
     yscale = Util.get_number("Distance from origin to y-extremes")
     res = Util.get_number("Resolution (0 checks one pixel at a time, 1 checks 4, 2 checks 9, ...)", bound=1079)
+    c = Util.get_number("C value", require_positive=False, use_float=True)
     filename = Util.get_string("File to save set to")
     java = bool(Util.get_choice(["No", "Yes"], "Generate using Java?"))
-    target = Text_Wrapper.Text_Wrapper_Writer(filename, width, height, xscale, yscale, res)
+    target = Text_Wrapper.Text_Wrapper_Writer(filename, width, height, xscale, yscale, res, c)
 
     x = 0
     while x <= width:
         y = 0
         while y <= height:
-            to_complex(x, y, target)
+            imaginary_num = to_complex(x, y, target)
+            in_set = is_in_set(imaginary_num, 0, target)
+            if in_set:
+                target.write_pixel(x, y, in_set)
+
+            y += (1 + target.res)
+        x += (1 + target.res)
 
 
 def to_complex(x, y, target):
-
+    
     real = (((2 * target.xscale) / target.width) * x) - target.xscale
     imaginary = (((2 * target.yscale) / target.height) * y) - target.yscale
     return complex(real, imaginary)
 
+
+def is_in_set(imaginary_num, depth, target):
+    
+    # https://en.wikipedia.org/wiki/Julia_set#Pseudocode_for_normal_Julia_sets
+    result = imaginary_num ** 2 + target.c
+    escape = 
+    if (result.real + result.imag <= escape and depth < 900:
+        return(is_in_set(result, depth + 1, target))
+    else:
+        if depth < 900:
+            return depth
+        else:
+            return False
 
 
 def render_set():
