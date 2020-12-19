@@ -29,7 +29,7 @@ class Text_Wrapper_Reader():
 
 class Text_Wrapper_Writer():
 
-    def __init__(self, filename, width, height, xscale, yscale, res):
+    def __init__(self, filename, width, height, xscale, yscale, res, c):
 
         self.filename = filename + '.set'
         self.width = width
@@ -37,6 +37,7 @@ class Text_Wrapper_Writer():
         self.xscale = xscale
         self.yscale = yscale
         self.res = res
+        self.c = c
 
         file = open(self.filename, 'w')
         file.close()
@@ -45,7 +46,8 @@ class Text_Wrapper_Writer():
         self.write_meta(self.height, "height", newline=False)
         self.write_meta(self.xscale, "xscale", newline=False)
         self.write_meta(self.yscale, "yscale", newline=False)
-        self.write_meta(self.res, "res")
+        self.write_meta(self.res, "res", newline=False)
+        self.write_meta(self.c, "c")
 
     
     def write_pixel(self, x, y):
