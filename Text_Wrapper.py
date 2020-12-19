@@ -1,4 +1,4 @@
-class Text_Wrapper_Reader():
+class TextWrapperReader():
 
     def __init__(self, filename):
         
@@ -28,7 +28,7 @@ class Text_Wrapper_Reader():
         return line[line.index('<' + tag + '>') + length : line.index('</' + tag + '>')]
 
 
-class Text_Wrapper_Writer():
+class TextWrapperWriter():
 
     def __init__(self, filename, width, height, res, c):
 

@@ -26,8 +26,7 @@ def generate_set():
     res = Util.get_number("Resolution (0 checks one pixel at a time, 1 checks 4, 2 checks 9, ...)", bound=1079)
     c = Util.get_complex("C value")
     filename = Util.get_string("File to save set to")
-    java = bool(Util.get_choice(["No", "Yes"], "Generate using Java?"))
-    target = Text_Wrapper.Text_Wrapper_Writer(filename, width, height, res, c)
+    target = Text_Wrapper.TextWrapperWriter(filename, width, height, res, c)
 
     x = 0
     while x <= width:
@@ -64,9 +63,9 @@ def is_in_set(imaginary_num, depth, target):
 
 def render_set():
 
-    data = Text_Wrapper.Text_Wrapper_Reader(Text_Wrapper.get_file('set'))
+    data = Text_Wrapper.TextWrapperReader(Text_Wrapper.get_file('set'))
     window = Tk()
-    canvas = Canvas(window, width=data.width, height=data.height)
+    canvas = Canvas(window, bg='#FFFFFF', width=data.width, height=data.height)
     canvas.pack()
 
     max_depth = 0
@@ -81,7 +80,8 @@ def render_set():
         x = pixel[0]
         y = pixel[1]
         fill_color = format(int(255 - (pixel[2] * grayscale)), '02x')
-        canvas.create_rectangle(x, y, x+res, y+res, fill='#FF00'+fill_color, outline='')
+        fill_color = '#' + (fill_color * 2) + 'FF'
+        canvas.create_rectangle(x, y, x+res, y+res, fill=fill_color, outline=fill_color)
 
     window.mainloop()
 
