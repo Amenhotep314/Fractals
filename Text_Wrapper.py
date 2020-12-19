@@ -27,6 +27,41 @@ class Text_Wrapper_Reader():
         return line[line.index('<' + tag + '>') + length : line.index('</' + tag + '>')]
 
 
+class Text_Wrapper_Writer():
+
+    def __init__(self, filename, width, height, xscale, yscale, res):
+
+        self.filename = filename + '.set'
+        self.width = width
+        self.height = height
+        self.xscale = xscale
+        self.yscale = yscale
+        self.res = res
+
+        file = open(self.filename, 'w')
+        file.close()
+
+        write_meta(self.width, "width", newline=False)
+        write_meta(self.height, "height", newline=False)
+        write_meta(self.xscale, "xscale", newline=False)
+        write_meta(self.yscale, "yscale", newline=False)
+        write_meta(self.res, "res")
+
+    
+    def write_pixel(self, x, y):
+
+        write_meta(str(x), 'x', newline=False)
+        write_meta(str(y), 'y')
+
+    
+    def write_meta(self, item, tag, newline=True):
+
+        with open(self.filename, "a") as target:
+            target.write("<" + tag + ">" + item + "</" + tag + ">")
+            if newline:
+                target.write('\n')
+
+
 def get_file(extension):
 
     from os import listdir
