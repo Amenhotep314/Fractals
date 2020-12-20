@@ -32,7 +32,7 @@ def generate_set():
     if set_type:
         seed = Util.get_complex("C value")
     else:
-        seed = 0
+        seed = Util.get_number("Exponent", require_positive=False, use_float=True)
     filename = Util.get_string("File to save set to")
     target = Text_Wrapper.TextWrapperWriter(filename, width, height, xmin, xmax, ymin, ymax, res)
 
@@ -56,7 +56,7 @@ def generate_set():
             y = 0
             while y <= height:
                 imaginary_num = to_complex(x, y, target)
-                in_set = is_in_mandelbrot_set(imaginary_num, 0, seed)
+                in_set = is_in_mandelbrot_set(imaginary_num, 0, seed, 0)
                 if in_set:
                     target.write_pixel(x, y, in_set)
                 print(str(int((x / (width + 1)) * 100)) + "%", end='\r')
@@ -85,12 +85,12 @@ def is_in_julia_set(imaginary_num, depth, c):
             return False
 
 
-def is_in_mandelbrot_set(imaginary_num, depth, z):
+def is_in_mandelbrot_set(imaginary_num, depth, power, z):
     
     # https://en.wikipedia.org/wiki/Mandelbrot_set#Computer_drawings
-    result = z ** 2 + imaginary_num
+    result = z ** power + imaginary_num
     if (z.real ** 2 + z.imag ** 2 <= 4) and depth < 900:
-        return(is_in_mandelbrot_set(imaginary_num, depth + 1, result))
+        return(is_in_mandelbrot_set(imaginary_num, depth + 1, power, result))
     else:
         if depth < 900:
             return depth
