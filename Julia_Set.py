@@ -109,17 +109,19 @@ def render_set():
     for pixel in data.pixels:
         if pixel[2] > max_depth:
             max_depth = pixel[2]
-    grayscale = 255 / max_depth
+    grayscale = 225 / max_depth
 
     res = data.res
 
     for i, pixel in enumerate(data.pixels):
         x = pixel[0]
         y = pixel[1]
-        fill_color = format(int(pixel[2] * grayscale), '02x')
-        fill_color = '#' + (fill_color * 2) + '00'
+        r = format(int(pixel[2] * grayscale + 30), '02x')
+        g = '00'
+        b = '00'
+        fill_color = '#' + r + g + b
         canvas.create_rectangle(x, y, x+res, y+res, fill=fill_color, outline=fill_color)
-        print(str(int((i / len(data.pixels)) * 100)) + "%", end='\r')
+        print(str(int((i / (len(data.pixels) - 1)) * 100)) + "%", end='\r')
 
     window.mainloop()
 
