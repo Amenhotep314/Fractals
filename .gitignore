@@ -1,4 +1,11 @@
 .git
+.vscode
+build
+dist
 __pycache__
+
+*.exe
 *.pyc
 *.set
+*.spec
+*.zip
