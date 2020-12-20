@@ -30,18 +30,20 @@ class TextWrapperReader():
 
 class TextWrapperWriter():
 
-    def __init__(self, filename, width, height, res):
-
-        from math import sqrt
+    def __init__(self, filename, width, height, xmin, xmax, ymin, ymax, res):
 
         self.filename = filename + '.set'
         self.width = width
         self.height = height
         self.res = res
 
+        self.xmin = xmin
+        self.xmax = xmax
+        self.ymin = ymin
+        self.ymax = ymax
+
         file = open(self.filename, 'w')
         file.close()
-
         self.write_meta(self.width, "width", newline=False)
         self.write_meta(self.height, "height", newline=False)
         self.write_meta(self.res, "res")

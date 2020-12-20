@@ -24,13 +24,17 @@ def generate_set():
     set_type = Util.get_choice(["Mandelbrot set", "Julia set"], "Set type")
     width = Util.get_number("Width of set in pixels", bound=1920)
     height = Util.get_number("Height of set in pixels", bound=1080)
+    xmin = Util.get_number("Minimum x value", use_float=True, require_positive=False)
+    xmax = Util.get_number("Maximum x value", use_float=True, require_positive=False)
+    ymin = Util.get_number("Minimum y value", use_float=True, require_positive=False)
+    ymax = Util.get_number("Maximum y value", use_float=True, require_positive=False)
     res = Util.get_number("Resolution (0 checks one pixel at a time, 1 checks 4, 2 checks 9, ...)", bound=1079)
     if set_type:
         seed = Util.get_complex("C value")
     else:
         seed = 0
     filename = Util.get_string("File to save set to")
-    target = Text_Wrapper.TextWrapperWriter(filename, width, height, res)
+    target = Text_Wrapper.TextWrapperWriter(filename, width, height, xmin, xmax, ymin, ymax, res)
 
     if set_type:
         x = 0
@@ -41,7 +45,7 @@ def generate_set():
                 in_set = is_in_julia_set(imaginary_num, 0, seed)
                 if in_set:
                     target.write_pixel(x, y, in_set)
-                print(str(int((x / height) * 100)) + "%", end='\r')
+                print(str(int((x / (width + 1)) * 100)) + "%", end='\r')
 
                 y += (1 + target.res)
             x += (1 + target.res)
@@ -55,7 +59,7 @@ def generate_set():
                 in_set = is_in_mandelbrot_set(imaginary_num, 0, seed)
                 if in_set:
                     target.write_pixel(x, y, in_set)
-                print(str(int((x / height) * 100)) + "%", end='\r')
+                print(str(int((x / (width + 1)) * 100)) + "%", end='\r')
 
                 y += (1 + target.res)
             x += (1 + target.res) 
@@ -63,8 +67,8 @@ def generate_set():
 
 def to_complex(x, y, target):
     
-    real = ((4 / target.width) * x) - 2
-    imaginary = ((4 / target.height) * y) - 2
+    real = (((target.xmax - target.xmin) / target.width) * x) + target.xmin
+    imaginary = (((target.ymin - target.ymax) / target.height) * y) + target.ymax
     return complex(real, imaginary)
 
 
