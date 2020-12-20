@@ -21,25 +21,44 @@ def main():
 
 def generate_set():
 
+    set_type = Util.get_choice(["Mandelbrot set", "Julia set"], "Set type")
     width = Util.get_number("Width of set in pixels", bound=1920)
     height = Util.get_number("Height of set in pixels", bound=1080)
     res = Util.get_number("Resolution (0 checks one pixel at a time, 1 checks 4, 2 checks 9, ...)", bound=1079)
-    c = Util.get_complex("C value")
+    if set_type:
+        seed = Util.get_complex("C value")
+    else:
+        seed = 0
     filename = Util.get_string("File to save set to")
-    target = Text_Wrapper.TextWrapperWriter(filename, width, height, res, c)
+    target = Text_Wrapper.TextWrapperWriter(filename, width, height, res)
 
-    x = 0
-    while x <= width:
-        y = 0
-        while y <= height:
-            imaginary_num = to_complex(x, y, target)
-            in_set = is_in_set(imaginary_num, 0, target)
-            if in_set:
-                target.write_pixel(x, y, in_set)
-            print(str(int(((x * width) / (width * height)) * 100)) + "%", end='\r')
+    if set_type:
+        x = 0
+        while x <= width:
+            y = 0
+            while y <= height:
+                imaginary_num = to_complex(x, y, target)
+                in_set = is_in_julia_set(imaginary_num, 0, seed)
+                if in_set:
+                    target.write_pixel(x, y, in_set)
+                print(str(int((x / height) * 100)) + "%", end='\r')
 
-            y += (1 + target.res)
-        x += (1 + target.res)
+                y += (1 + target.res)
+            x += (1 + target.res)
+    
+    else:
+        x = 0
+        while x <= width:
+            y = 0
+            while y <= height:
+                imaginary_num = to_complex(x, y, target)
+                in_set = is_in_mandelbrot_set(imaginary_num, 0, seed)
+                if in_set:
+                    target.write_pixel(x, y, in_set)
+                print(str(int((x / height) * 100)) + "%", end='\r')
+
+                y += (1 + target.res)
+            x += (1 + target.res) 
 
 
 def to_complex(x, y, target):
@@ -49,14 +68,27 @@ def to_complex(x, y, target):
     return complex(real, imaginary)
 
 
-def is_in_set(imaginary_num, depth, target):
+def is_in_julia_set(imaginary_num, depth, c):
     
     # https://en.wikipedia.org/wiki/Julia_set#Pseudocode_for_normal_Julia_sets
-    result = imaginary_num ** 2 + target.c
+    result = imaginary_num ** 2 + c
     if (result.real ** 2 + result.imag ** 2 <= 4) and depth < 900:
-        return(is_in_set(result, depth + 1, target))
+        return(is_in_julia_set(result, depth + 1, c))
     else:
-        if depth < 1000:
+        if depth < 900:
+            return depth
+        else:
+            return False
+
+
+def is_in_mandelbrot_set(imaginary_num, depth, z):
+    
+    # https://en.wikipedia.org/wiki/Mandelbrot_set#Computer_drawings
+    result = z ** 2 + imaginary_num
+    if (z.real ** 2 + z.imag ** 2 <= 4) and depth < 900:
+        return(is_in_mandelbrot_set(imaginary_num, depth + 1, result))
+    else:
+        if depth < 900:
             return depth
         else:
             return False
@@ -66,7 +98,7 @@ def render_set():
 
     data = Text_Wrapper.TextWrapperReader(Text_Wrapper.get_file('set'))
     window = Tk()
-    canvas = Canvas(window, bg='#FFFFFF', width=data.width, height=data.height)
+    canvas = Canvas(window, bg='#000000', width=data.width, height=data.height)
     canvas.pack()
 
     max_depth = 0
@@ -77,12 +109,13 @@ def render_set():
 
     res = data.res
 
-    for pixel in data.pixels:
+    for i, pixel in enumerate(data.pixels):
         x = pixel[0]
         y = pixel[1]
-        fill_color = format(int(255 - (pixel[2] * grayscale)), '02x')
-        fill_color = '#' + (fill_color * 2) + 'FF'
+        fill_color = format(int(pixel[2] * grayscale), '02x')
+        fill_color = '#' + (fill_color * 2) + '00'
         canvas.create_rectangle(x, y, x+res, y+res, fill=fill_color, outline=fill_color)
+        print(str(int((i / len(data.pixels)) * 100)) + "%", end='\r')
 
     window.mainloop()
 

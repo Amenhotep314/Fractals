@@ -30,7 +30,7 @@ class TextWrapperReader():
 
 class TextWrapperWriter():
 
-    def __init__(self, filename, width, height, res, c):
+    def __init__(self, filename, width, height, res):
 
         from math import sqrt
 
@@ -38,15 +38,13 @@ class TextWrapperWriter():
         self.width = width
         self.height = height
         self.res = res
-        self.c = c
 
         file = open(self.filename, 'w')
         file.close()
 
         self.write_meta(self.width, "width", newline=False)
         self.write_meta(self.height, "height", newline=False)
-        self.write_meta(self.res, "res", newline=False)
-        self.write_meta(self.c, "c", newline=False)
+        self.write_meta(self.res, "res")
 
     
     def write_pixel(self, x, y, depth):
