@@ -109,14 +109,14 @@ def render_set():
     for pixel in data.pixels:
         if pixel[2] > max_depth:
             max_depth = pixel[2]
-    grayscale = 225 / max_depth
 
     res = data.res
 
     for i, pixel in enumerate(data.pixels):
         x = pixel[0]
         y = pixel[1]
-        r = format(int(pixel[2] * grayscale + 30), '02x')
+        color = (-255 / (max_depth ** 2)) * ((pixel[2] - max_depth) ** 2) + 255
+        r = format(int(color), '02x')
         g = '00'
         b = '00'
         fill_color = '#' + r + g + b
