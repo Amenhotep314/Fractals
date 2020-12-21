@@ -100,12 +100,15 @@ def is_in_mandelbrot_set(z, exponent, c, depth):
 
 def render_set():
 
+    file = Text_Wrapper.get_file('set')
+    
     red = Util.get_choice(["Light to dark", "Dark to light", "Solid", "None"], "How should red be rendered?")
     green = Util.get_choice(["Light to dark", "Dark to light", "Solid", "None"], "How should green be rendered?")
     blue = Util.get_choice(["Light to dark", "Dark to light", "Solid", "None"], "How should blue be rendered?")
 
-    data = Text_Wrapper.TextWrapperReader(Text_Wrapper.get_file('set'))
+    data = Text_Wrapper.TextWrapperReader(file)
     window = Tk()
+    window.title(file)
     canvas = Canvas(window, bg='#000000', width=data.width, height=data.height)
     canvas.pack()
 
