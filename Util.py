@@ -1,7 +1,7 @@
 def get_choice(options, prompt):
 
     while True:
-        print(prompt + " (1 - " + str(len(options)) + "):")
+        print('\n' + prompt + " (1 - " + str(len(options)) + "):")
         for i, option in enumerate(options):
             print(str(i + 1) + '. ' + option)
         choice = input('>>> ')
@@ -19,7 +19,7 @@ def get_choice(options, prompt):
 def get_number(prompt, bound=0, require_positive=True, use_float=False):
 
     while True:
-        print(prompt)
+        print('\n' + prompt)
         choice = input('>>> ')
 
         try:
@@ -40,7 +40,7 @@ def get_number(prompt, bound=0, require_positive=True, use_float=False):
 def get_complex(prompt):
 
     while True:
-        print(prompt)
+        print('\n' + prompt)
         real = get_number("Real part", require_positive=False, use_float=True)
         imaginary = get_number("Imaginary part", require_positive=False, use_float=True)
 
@@ -54,7 +54,7 @@ def get_complex(prompt):
 
 def get_string(prompt):
 
-    print(prompt)
+    print('\n' + prompt)
     choice = input('>>> ')
     return choice
 
