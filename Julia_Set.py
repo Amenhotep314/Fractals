@@ -109,6 +109,12 @@ def render_set():
     canvas = Canvas(window, bg='#000000', width=data.width, height=data.height)
     canvas.pack()
 
+    def motion(event):
+        x, y = event.x, event.y
+        print(to_complex(x, y, data))
+
+    window.bind('<Motion>', motion)
+
     max_depth = 0
     for pixel in data.pixels:
         if pixel[2] > max_depth:

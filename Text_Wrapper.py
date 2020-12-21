@@ -21,6 +21,11 @@ class TextWrapperReader():
         self.height = int(self.read_meta(info, 'height'))
         self.res = int(self.read_meta(info, 'res'))
 
+        self.xmin = float(self.read_meta(info, 'xmin'))
+        self.xmax = float(self.read_meta(info, 'xmax'))
+        self.ymin = float(self.read_meta(info, 'ymin'))
+        self.ymax = float(self.read_meta(info, 'ymax'))
+
     
     def read_meta(self, line, tag):
 
@@ -46,6 +51,10 @@ class TextWrapperWriter():
         file.close()
         self.write_meta(self.width, "width", newline=False)
         self.write_meta(self.height, "height", newline=False)
+        self.write_meta(self.xmin, "xmin", newline=False)
+        self.write_meta(self.xmax, "xmax", newline=False)
+        self.write_meta(self.ymin, "ymin", newline=False)
+        self.write_meta(self.ymax, "ymax", newline=False)
         self.write_meta(self.res, "res")
 
     
