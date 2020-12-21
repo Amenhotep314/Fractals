@@ -7,8 +7,9 @@ import Text_Wrapper
 
 def main():
 
+    print("\nWelcome to Fractal Set Generator/Renderer")
+
     while True:
-        print("Welcome to Julia Set Generator/Renderer")
         choice = Util.get_choice(["Generate a set", "Render a set", "Help!"], "What would you like to do?")
 
         if choice == 0:
@@ -62,8 +63,6 @@ def generate_set():
 
                 y += (1 + target.res)
             x += (1 + target.res)
-    
-     
 
 
 def to_complex(x, y, target):
@@ -101,6 +100,10 @@ def is_in_mandelbrot_set(z, exponent, c, depth):
 
 def render_set():
 
+    red = Util.get_choice(["Light to dark", "Dark to light", "Solid", "None"], "How should red be rendered?")
+    green = Util.get_choice(["Light to dark", "Dark to light", "Solid", "None"], "How should green be rendered?")
+    blue = Util.get_choice(["Light to dark", "Dark to light", "Solid", "None"], "How should blue be rendered?")
+
     data = Text_Wrapper.TextWrapperReader(Text_Wrapper.get_file('set'))
     window = Tk()
     canvas = Canvas(window, bg='#000000', width=data.width, height=data.height)
@@ -117,9 +120,34 @@ def render_set():
         x = pixel[0]
         y = pixel[1]
         color = (-255 / (max_depth ** 2)) * ((pixel[2] - max_depth) ** 2) + 255
-        r = format(int(color), '02x')
-        g = '00'
-        b = '00'
+
+        if red == 0:
+            r = format(255 - int(color), '02x')
+        if red == 1:
+            r = format(int(color), '02x')
+        if red == 2:
+            r = '80'
+        if red == 3:
+            r = '00'
+
+        if green == 0:
+            g = format(255 - int(color), '02x')
+        if green == 1:
+            g = format(int(color), '02x')
+        if green == 2:
+            g = '80'
+        if green == 3:
+            g = '00'
+
+        if blue == 0:
+            b = format(255 - int(color), '02x')
+        if blue == 1:
+            b = format(int(color), '02x')
+        if blue == 2:
+            b = '80'
+        if blue == 3:
+            b = '00'
+
         fill_color = '#' + r + g + b
         canvas.create_rectangle(x, y, x+res, y+res, fill=fill_color, outline=fill_color)
         print(str(int((i / (len(data.pixels) - 1)) * 100)) + "%", end='\r')
