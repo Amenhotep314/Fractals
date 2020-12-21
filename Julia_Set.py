@@ -155,7 +155,7 @@ def render_set():
             b = '00'
 
         fill_color = '#' + r + g + b
-        canvas.create_rectangle(x, y, x+res, y+res, fill=fill_color, outline=fill_color)
+        canvas.create_rectangle(x, y, x+res, y+res, fill=fill_color, width=0)
         print(str(int((i / (len(data.pixels) - 1)) * 100)) + "%", end='\r')
 
     window.mainloop()
