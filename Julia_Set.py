@@ -30,19 +30,32 @@ def generate_set():
     ymax = Util.get_number("Maximum y value", use_float=True, require_positive=False)
     res = Util.get_number("Resolution (0 checks one pixel at a time, 1 checks 4, 2 checks 9, ...)", bound=1079)
     if set_type:
-        seed = Util.get_complex("C value")
-    else:
-        seed = Util.get_number("Exponent", require_positive=False, use_float=True)
+        c = Util.get_complex("C value")
+    exponent = Util.get_number("Exponent", use_float=True)
     filename = Util.get_string("File to save set to")
     target = Text_Wrapper.TextWrapperWriter(filename, width, height, xmin, xmax, ymin, ymax, res)
 
-    if set_type:
+    if set_type == 0:
         x = 0
         while x <= width:
             y = 0
             while y <= height:
-                imaginary_num = to_complex(x, y, target)
-                in_set = is_in_julia_set(imaginary_num, 0, seed)
+                c = to_complex(x, y, target)
+                in_set = is_in_mandelbrot_set(0, exponent, c, 0)
+                if in_set:
+                    target.write_pixel(x, y, in_set)
+                print(str(int((x / (width + 1)) * 100)) + "%", end='\r')
+
+                y += (1 + target.res)
+            x += (1 + target.res)
+
+    elif set_type == 1:
+        x = 0
+        while x <= width:
+            y = 0
+            while y <= height:
+                z = to_complex(x, y, target)
+                in_set = is_in_julia_set(z, exponent, c, 0)
                 if in_set:
                     target.write_pixel(x, y, in_set)
                 print(str(int((x / (width + 1)) * 100)) + "%", end='\r')
@@ -50,19 +63,7 @@ def generate_set():
                 y += (1 + target.res)
             x += (1 + target.res)
     
-    else:
-        x = 0
-        while x <= width:
-            y = 0
-            while y <= height:
-                imaginary_num = to_complex(x, y, target)
-                in_set = is_in_mandelbrot_set(imaginary_num, 0, seed, 0)
-                if in_set:
-                    target.write_pixel(x, y, in_set)
-                print(str(int((x / (width + 1)) * 100)) + "%", end='\r')
-
-                y += (1 + target.res)
-            x += (1 + target.res) 
+     
 
 
 def to_complex(x, y, target):
@@ -72,12 +73,12 @@ def to_complex(x, y, target):
     return complex(real, imaginary)
 
 
-def is_in_julia_set(imaginary_num, depth, c):
+def is_in_julia_set(z, exponent, c, depth):
     
     # https://en.wikipedia.org/wiki/Julia_set#Pseudocode_for_normal_Julia_sets
-    result = imaginary_num ** 2 + c
+    result = z ** exponent + c
     if (result.real ** 2 + result.imag ** 2 <= 4) and depth < 900:
-        return(is_in_julia_set(result, depth + 1, c))
+        return(is_in_julia_set(result, exponent, c, depth + 1))
     else:
         if depth < 900:
             return depth
@@ -85,12 +86,12 @@ def is_in_julia_set(imaginary_num, depth, c):
             return False
 
 
-def is_in_mandelbrot_set(imaginary_num, depth, power, z):
+def is_in_mandelbrot_set(z, exponent, c, depth):
     
     # https://en.wikipedia.org/wiki/Mandelbrot_set#Computer_drawings
-    result = z ** power + imaginary_num
+    result = z ** exponent + c
     if (z.real ** 2 + z.imag ** 2 <= 4) and depth < 900:
-        return(is_in_mandelbrot_set(imaginary_num, depth + 1, power, result))
+        return(is_in_mandelbrot_set(result, exponent, c, depth + 1))
     else:
         if depth < 900:
             return depth
