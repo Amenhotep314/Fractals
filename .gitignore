@@ -1,10 +1,12 @@
 .git
+__pycache__
 .vscode
 build
 dist
-__pycache__
+venv
 
 *.exe
+*.png
 *.pyc
 *.set
 *.spec

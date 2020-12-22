@@ -1,5 +1,6 @@
 from tkinter import Tk, Canvas
 from random import randint
+from PIL import Image, ImageDraw
 
 import Util
 import Text_Wrapper
@@ -23,8 +24,8 @@ def main():
 def generate_set():
 
     set_type = Util.get_choice(["Mandelbrot set", "Julia set"], "Set type")
-    width = Util.get_number("Width of set in pixels", bound=1920)
-    height = Util.get_number("Height of set in pixels", bound=1080)
+    width = Util.get_number("Width of set in pixels")
+    height = Util.get_number("Height of set in pixels")
     xmin = Util.get_number("Minimum x value", use_float=True, require_positive=False)
     xmax = Util.get_number("Maximum x value", use_float=True, require_positive=False)
     ymin = Util.get_number("Minimum y value", use_float=True, require_positive=False)
@@ -112,6 +113,9 @@ def render_set():
     canvas = Canvas(window, bg='#000000', width=data.width, height=data.height)
     canvas.pack()
 
+    image = Image.new("RGB", (data.width, data.height))
+    draw = ImageDraw.Draw(image)
+
     def motion(event):
         x, y = event.x, event.y
         print(to_complex(x, y, data))
@@ -131,36 +135,38 @@ def render_set():
         color = (-255 / (max_depth ** 2)) * ((pixel[2] - max_depth) ** 2) + 255
 
         if red == 0:
-            r = format(255 - int(color), '02x')
+            r = 255 - int(color)
         if red == 1:
-            r = format(int(color), '02x')
+            r = int(color)
         if red == 2:
-            r = '80'
+            r = 128
         if red == 3:
-            r = '00'
+            r = 0
 
         if green == 0:
-            g = format(255 - int(color), '02x')
+            g = 255 - int(color)
         if green == 1:
-            g = format(int(color), '02x')
+            g = int(color)
         if green == 2:
-            g = '80'
+            g = 128
         if green == 3:
-            g = '00'
+            g = 0
 
         if blue == 0:
-            b = format(255 - int(color), '02x')
+            b = 255 - int(color)
         if blue == 1:
-            b = format(int(color), '02x')
+            b = int(color)
         if blue == 2:
-            b = '80'
+            b = 128
         if blue == 3:
-            b = '00'
+            b = 0
 
-        fill_color = '#' + r + g + b
-        canvas.create_rectangle(x, y, x+res, y+res, fill=fill_color, width=0)
+        fill_color = '#' + format(r, '02x') + format(g, '02x') + format(b, '02x')
+        canvas.create_rectangle(x, y, x+res, y+res, fill=fill_color, outline=fill_color)
+        draw.rectangle([x, y, x+res, y+res], fill=fill_color, outline=fill_color, width=0)
         print(str(int((i / (len(data.pixels) - 1)) * 100)) + "%", end='\r')
 
+    image.save(file.replace('.set', '.png'))
     window.mainloop()
 
 
