@@ -104,8 +104,16 @@ def render_set():
     file = Text_Wrapper.get_file('set')
     
     red = Util.get_choice(["Light to dark", "Dark to light", "Solid", "None"], "How should red be rendered?")
+    if red == 2:
+        rshade = Util.get_number("Shade", bound=255)
+
     green = Util.get_choice(["Light to dark", "Dark to light", "Solid", "None"], "How should green be rendered?")
+    if green == 2:
+        gshade = Util.get_number("Shade", bound=255)
+
     blue = Util.get_choice(["Light to dark", "Dark to light", "Solid", "None"], "How should blue be rendered?")
+    if blue == 2:
+        bshade = Util.get_number("Shade", bound=255)
 
     data = Text_Wrapper.TextWrapperReader(file)
     window = Tk()
@@ -139,7 +147,7 @@ def render_set():
         if red == 1:
             r = int(color)
         if red == 2:
-            r = 128
+            r = rshade
         if red == 3:
             r = 0
 
@@ -148,7 +156,7 @@ def render_set():
         if green == 1:
             g = int(color)
         if green == 2:
-            g = 128
+            g = gshade
         if green == 3:
             g = 0
 
@@ -157,13 +165,13 @@ def render_set():
         if blue == 1:
             b = int(color)
         if blue == 2:
-            b = 128
+            b = bshade
         if blue == 3:
             b = 0
 
         fill_color = '#' + format(r, '02x') + format(g, '02x') + format(b, '02x')
         canvas.create_rectangle(x, y, x+res, y+res, fill=fill_color, outline=fill_color)
-        draw.rectangle([x, y, x+res, y+res], fill=fill_color, outline=fill_color, width=0)
+        draw.rectangle([x, y, x+res, y+res], fill=fill_color, outline=fill_color)
         print(str(int((i / (len(data.pixels) - 1)) * 100)) + "%", end='\r')
 
     image.save(file.replace('.set', '.png'))
