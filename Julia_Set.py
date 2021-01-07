@@ -23,7 +23,7 @@ def main():
 
 def generate_set():
 
-    set_type = Util.get_choice(["Mandelbrot set", "Julia set"], "Set type")
+    set_type = Util.get_choice(["Mandelbrot set", "Julia set", "Burning ship"], "Set type")
     width = Util.get_number("Width of set in pixels")
     height = Util.get_number("Height of set in pixels")
     xmin = Util.get_number("Minimum x value", use_float=True, require_positive=False)
@@ -31,7 +31,7 @@ def generate_set():
     ymin = Util.get_number("Minimum y value", use_float=True, require_positive=False)
     ymax = Util.get_number("Maximum y value", use_float=True, require_positive=False)
     res = Util.get_number("Resolution (0 checks one pixel at a time, 1 checks 4, 2 checks 9, ...)", bound=1079)
-    if set_type:
+    if set_type == 1:
         c = Util.get_complex("C value")
     exponent = Util.get_number("Exponent", use_float=True)
     filename = Util.get_string("File to save set to")
@@ -65,6 +65,22 @@ def generate_set():
                 y += (1 + target.res)
             x += (1 + target.res)
 
+    elif set_type == 2:
+        x = 0
+        while x <= width:
+            y = 0
+            while y <= height:
+                c = to_complex(x, y, target)
+                in_set = is_in_burning_ship(0, exponent, c, 0)
+                if in_set:
+                    target.write_pixel(x, y, in_set)
+                print(str(int((x / (width + 1)) * 100)) + "%", end='\r')
+
+                y += (1 + target.res)
+            x += (1 + target.res)
+
+    
+
 
 def to_complex(x, y, target):
     
@@ -92,6 +108,19 @@ def is_in_mandelbrot_set(z, exponent, c, depth):
     result = z ** exponent + c
     if (z.real ** 2 + z.imag ** 2 <= 4) and depth < 900:
         return(is_in_mandelbrot_set(result, exponent, c, depth + 1))
+    else:
+        if depth < 900:
+            return depth
+        else:
+            return False
+
+
+def is_in_burning_ship(z, exponent, c, depth):
+    
+    # https://en.wikipedia.org/wiki/Burning_Ship_fractal
+    result = (complex(abs(z.real), abs(z.imag))) ** exponent + c
+    if (z.real ** 2 + z.imag ** 2 <= 4) and depth < 900:
+        return(is_in_burning_ship(result, exponent, c, depth + 1))
     else:
         if depth < 900:
             return depth
