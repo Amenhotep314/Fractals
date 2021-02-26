@@ -24,12 +24,13 @@ def main():
 def generate_set():
 
     set_type = Util.get_choice(["Mandelbrot set", "Julia set", "Burning ship"], "Set type")
-    width = Util.get_number("Width of set in pixels")
-    height = Util.get_number("Height of set in pixels")
     xmin = Util.get_number("Minimum x value", use_float=True, require_positive=False)
     xmax = Util.get_number("Maximum x value", use_float=True, require_positive=False)
     ymin = Util.get_number("Minimum y value", use_float=True, require_positive=False)
     ymax = Util.get_number("Maximum y value", use_float=True, require_positive=False)
+    height = Util.get_number("Height of set in pixels")
+    width = int((height / abs(ymax - ymin)) * abs(xmax - xmin))
+    print("Width auto-set to " + str(width) + ".")
     res = Util.get_number("Resolution (0 checks one pixel at a time, 1 checks 4, 2 checks 9, ...)", bound=1079)
     if set_type == 1:
         c = Util.get_complex("C value")
