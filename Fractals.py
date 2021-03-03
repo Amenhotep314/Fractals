@@ -8,17 +8,18 @@ import Text_Wrapper
 
 def main():
 
-    print("\nWelcome to Fractal Set Generator/Renderer")
+    print("\nWelcome to Fractal Set Generator & Renderer")
 
     while True:
-        choice = Util.get_choice(["Generate a set", "Render a set", "Help!"], "What would you like to do?")
+        choice = Util.get_choice(["Generate a set", "Render a set", "Quit"], "What would you like to do?")
 
         if choice == 0:
             generate_set()
         elif choice == 1:
-            render_set()
+            ui_renderer()
         else:
-            help()
+            print("Thank you for using the Fractal Set Generator & Renderer!")
+            quit()
 
 
 def generate_set():
@@ -78,9 +79,7 @@ def generate_set():
                 print(str(int((x / (width + 1)) * 100)) + "%", end='\r')
 
                 y += (1 + target.res)
-            x += (1 + target.res)
-
-    
+            x += (1 + target.res)    
 
 
 def to_complex(x, y, target):
@@ -129,10 +128,15 @@ def is_in_burning_ship(z, exponent, c, depth):
             return False
 
 
-def render_set():
+def ui_renderer():
 
     file = Text_Wrapper.get_file('set')
-    
+    data = Text_Wrapper.TextWrapperReader(file)
+
+    rshade = 0
+    gshade = 0
+    bshade = 0
+
     red = Util.get_choice(["Light to dark", "Dark to light", "Solid", "None"], "How should red be rendered?")
     if red == 2:
         rshade = Util.get_number("Shade", bound=255)
@@ -145,20 +149,25 @@ def render_set():
     if blue == 2:
         bshade = Util.get_number("Shade", bound=255)
 
-    data = Text_Wrapper.TextWrapperReader(file)
-    window = Tk()
-    window.title(file)
-    canvas = Canvas(window, bg='#000000', width=data.width, height=data.height)
-    canvas.pack()
+    render_set(data, red, green, blue, rshade, gshade, bshade)
+
+
+def render_set(data, red, green, blue, rshade, gshade, bshade, interactive=True):
 
     image = Image.new("RGB", (data.width, data.height))
     draw = ImageDraw.Draw(image)
 
-    def motion(event):
-        x, y = event.x, event.y
-        print(to_complex(x, y, data))
+    if interactive:
+        window = Tk()
+        window.title(data.filename)
+        canvas = Canvas(window, bg='#000000', width=data.width, height=data.height)
+        canvas.pack()
 
-    window.bind('<Motion>', motion)
+        def motion(event):
+            x, y = event.x, event.y
+            print(to_complex(x, y, data))
+
+        window.bind('<Motion>', motion)
 
     max_depth = 0
     for pixel in data.pixels:
@@ -200,24 +209,15 @@ def render_set():
             b = 0
 
         fill_color = '#' + format(r, '02x') + format(g, '02x') + format(b, '02x')
-        canvas.create_rectangle(x, y, x+res, y+res, fill=fill_color, outline=fill_color)
+        if interactive:
+            canvas.create_rectangle(x, y, x+res, y+res, fill=fill_color, outline=fill_color)
         draw.rectangle([x, y, x+res, y+res], fill=fill_color, outline=fill_color)
         print(str(int((i / (len(data.pixels) - 1)) * 100)) + "%", end='\r')
 
     image.save(file.replace('.set', '.png'))
-    window.mainloop()
-
-
-def help():
-
-    print("JULIA SETS")
-    print("Information about Julia Sets goes here.\n")
-
-    print("GENERATING SETS")
-    print("Information about generating sets goes here.\n")
-
-    print("RENDERING SETS")
-    print("Information about rendering sets goes here.\n")
+    image.save(data.filename.replace('.set', '.png'))
+    if interactive:
+        window.mainloop()
 
 
 if __name__ == "__main__":

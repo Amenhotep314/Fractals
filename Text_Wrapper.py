@@ -2,6 +2,7 @@ class TextWrapperReader():
 
     def __init__(self, filename):
         
+        self.filename = filename
         self.file = []
         with open(filename, 'r') as source:
             source_list = source.readlines()
