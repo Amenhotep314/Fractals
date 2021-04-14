@@ -2,8 +2,8 @@ from tkinter import Tk, Canvas
 from random import randint
 from PIL import Image, ImageDraw
 
-import Util
-import Text_Wrapper
+from Util import *
+from Wrapper import *
 
 
 def main():
@@ -11,10 +11,10 @@ def main():
     print("\nWelcome to Fractal Set Generator & Renderer")
 
     while True:
-        choice = Util.get_choice(["Generate a set", "Render a set", "Quit"], "What would you like to do?")
+        choice = get_choice(["Generate a set", "Render a set", "Quit"], "What would you like to do?")
 
         if choice == 0:
-            generate_set()
+            generate__single_set()
         elif choice == 1:
             ui_renderer()
         else:
@@ -22,36 +22,37 @@ def main():
             quit()
 
 
-def generate_set():
+def generate_single_set():
 
-    set_type = Util.get_choice(["Mandelbrot set", "Julia set", "Burning ship"], "Set type")
-    xmin = Util.get_number("Minimum x value", use_float=True, require_positive=False)
-    xmax = Util.get_number("Maximum x value", use_float=True, require_positive=False)
-    ymin = Util.get_number("Minimum y value", use_float=True, require_positive=False)
-    ymax = Util.get_number("Maximum y value", use_float=True, require_positive=False)
-    height = Util.get_number("Height of set in pixels")
+    set_type = get_choice(["Mandelbrot set", "Julia set", "Burning ship"], "Set type")
+    xmin = get_number("Minimum x value", use_float=True, require_positive=False)
+    xmax = get_number("Maximum x value", use_float=True, require_positive=False)
+    ymin = get_number("Minimum y value", use_float=True, require_positive=False)
+    ymax = get_number("Maximum y value", use_float=True, require_positive=False)
+    height = get_number("Height of set in pixels")
     width = int((height / abs(ymax - ymin)) * abs(xmax - xmin))
     print("Width auto-set to " + str(width) + ".")
-    res = Util.get_number("Resolution (0 checks one pixel at a time, 1 checks 4, 2 checks 9, ...)", bound=1079)
+    res = get_number("Resolution (0 checks one pixel at a time, 1 checks 4, 2 checks 9, ...)", bound=1079)
     if set_type == 1:
-        c = Util.get_complex("C value")
-    exponent = Util.get_number("Exponent", use_float=True)
-    filename = Util.get_string("File to save set to")
-    target = Text_Wrapper.TextWrapperWriter(filename, width, height, xmin, xmax, ymin, ymax, res)
+        c = get_complex("C value")
+    exponent = get_number("Exponent", use_float=True)
+    filename = get_string("File to save set to")
+    target = TextWrapperWriter(filename, width, height, xmin, xmax, ymin, ymax, res)
 
-    if set_type == 0:
-        x = 0
-        while x <= width:
-            y = 0
-            while y <= height:
-                c = to_complex(x, y, target)
-                in_set = is_in_mandelbrot_set(0, exponent, c, 0)
-                if in_set:
-                    target.write_pixel(x, y, in_set)
-                print(str(int((x / (width + 1)) * 100)) + "%", end='\r')
 
-                y += (1 + target.res)
-            x += (1 + target.res)
+def generate_mandelbrot_set(target)
+
+    x = 0
+    while x <= width:
+        y = 0
+        while y <= height:
+            c = to_complex(x, y, target)
+            in_set = is_in_mandelbrot_set(0, exponent, c, 0)
+            if in_set:
+                target.write_pixel(x, y, in_set)
+            print(str(int((x / (width + 1)) * 100)) + "%", end='\r')
+            y += (1 + target.res)
+        x += (1 + target.res)
 
     elif set_type == 1:
         x = 0
@@ -130,24 +131,24 @@ def is_in_burning_ship(z, exponent, c, depth):
 
 def ui_renderer():
 
-    file = Text_Wrapper.get_file('set')
-    data = Text_Wrapper.TextWrapperReader(file)
+    file = get_file('set')
+    data = TextWrapperReader(file)
 
     rshade = 0
     gshade = 0
     bshade = 0
 
-    red = Util.get_choice(["Light to dark", "Dark to light", "Solid", "None"], "How should red be rendered?")
+    red = get_choice(["Light to dark", "Dark to light", "Solid", "None"], "How should red be rendered?")
     if red == 2:
-        rshade = Util.get_number("Shade", bound=255)
+        rshade = get_number("Shade", bound=255)
 
-    green = Util.get_choice(["Light to dark", "Dark to light", "Solid", "None"], "How should green be rendered?")
+    green = get_choice(["Light to dark", "Dark to light", "Solid", "None"], "How should green be rendered?")
     if green == 2:
-        gshade = Util.get_number("Shade", bound=255)
+        gshade = get_number("Shade", bound=255)
 
-    blue = Util.get_choice(["Light to dark", "Dark to light", "Solid", "None"], "How should blue be rendered?")
+    blue = get_choice(["Light to dark", "Dark to light", "Solid", "None"], "How should blue be rendered?")
     if blue == 2:
-        bshade = Util.get_number("Shade", bound=255)
+        bshade = get_number("Shade", bound=255)
 
     render_set(data, red, green, blue, rshade, gshade, bshade)
 
@@ -214,7 +215,14 @@ def render_set(data, red, green, blue, rshade, gshade, bshade, interactive=True)
         draw.rectangle([x, y, x+res, y+res], fill=fill_color, outline=fill_color)
         print(str(int((i / (len(data.pixels) - 1)) * 100)) + "%", end='\r')
 
-    image.save(file.replace('.set', '.png'))
+    signature = TextWrapperReader("signature.set")
+    xorigin = data.width - 63
+    yorigin = data.height - 50
+    for pixel in signature.pixels:
+        x = pixel[0]
+        y = pixel[1]
+        draw.rectangle([x+xorigin, y+yorigin, x+xorigin, y+yorigin], fill='#FFFFFF', outline='#FFFFFF')
+
     image.save(data.filename.replace('.set', '.png'))
     if interactive:
         window.mainloop()
