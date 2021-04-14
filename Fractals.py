@@ -223,13 +223,13 @@ def render_set(data, red, green, blue, rshade, gshade, bshade, interactive=True)
         draw.rectangle([x, y, x+res, y+res], fill=fill_color, outline=fill_color)
         print(str(int((i / (len(data.pixels) - 1)) * 100)) + "%", end='\r')
 
-    signature = TextWrapperReader("signature.set")
-    xorigin = data.width - 63
-    yorigin = data.height - 50
-    for pixel in signature.pixels:
-        x = pixel[0]
-        y = pixel[1]
-        draw.rectangle([x+xorigin, y+yorigin, x+xorigin, y+yorigin], fill='#FFFFFF', outline='#FFFFFF')
+    # signature = TextWrapperReader("signature.set")
+    # xorigin = data.width - 63
+    # yorigin = data.height - 50
+    # for pixel in signature.pixels:
+    #     x = pixel[0]
+    #     y = pixel[1]
+    #     draw.rectangle([x+xorigin, y+yorigin, x+xorigin, y+yorigin], fill='#FFFFFF', outline='#FFFFFF')
 
     image.save(data.filename.replace('.set', '.png'))
     if interactive:
