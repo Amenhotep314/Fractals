@@ -24,20 +24,28 @@ def main():
 
 def generate_single_set():
 
+    set_types = [generate_mandelbrot_set, generate_julia_set, generate_burning_ship]
     set_type = get_choice(["Mandelbrot set", "Julia set", "Burning ship"], "Set type")
+    set_function = set_types[set_type]
+
     xmin = get_number("Minimum x value", use_float=True, require_positive=False)
     xmax = get_number("Maximum x value", use_float=True, require_positive=False)
     ymin = get_number("Minimum y value", use_float=True, require_positive=False)
     ymax = get_number("Maximum y value", use_float=True, require_positive=False)
+
     height = get_number("Height of set in pixels")
     width = int((height / abs(ymax - ymin)) * abs(xmax - xmin))
     print("Width auto-set to " + str(width) + ".")
+
     res = get_number("Resolution (0 checks one pixel at a time, 1 checks 4, 2 checks 9, ...)", bound=1079)
     if set_type == 1:
         c = get_complex("C value")
     exponent = get_number("Exponent", use_float=True)
+
     filename = get_string("File to save set to")
     target = TextWrapperWriter(filename, width, height, xmin, xmax, ymin, ymax, res)
+    
+    set_function(target)
 
 
 def generate_mandelbrot_set(target)
