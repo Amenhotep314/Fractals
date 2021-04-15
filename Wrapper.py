@@ -36,9 +36,9 @@ class TextWrapperReader():
 
 class TextWrapperWriter():
 
-    def __init__(self, filename, width, height, xmin, xmax, ymin, ymax, res):
+    def __init__(self, filename, width, height, xmin, xmax, ymin, ymax, res, c, exponent):
 
-        self.filename = filename + '.set'
+        self.filename = filename
         self.width = width
         self.height = height
         self.res = res
@@ -48,9 +48,12 @@ class TextWrapperWriter():
         self.ymin = ymin
         self.ymax = ymax
 
-        file = open(self.filename, 'w')
+        self.c = c
+        self.exponent = exponent
+
+        file = open(self.filename + '.set', 'w')
         file.close()
-        self.file = open(self.filename, 'a')
+        self.file = open(self.filename + '.set', 'a')
         self.write_meta(self.width, "w", newline=False)
         self.write_meta(self.height, "h", newline=False)
         self.write_meta(self.xmin, "xmin", newline=False)
@@ -74,18 +77,18 @@ class TextWrapperWriter():
             self.file.write('\n')
 
 
-def get_file(extension):
+class ImageWrapper():
 
-    from os import listdir
-    from Util import get_choice
+    def __init__(self, filename, width, height, res, red, green, blue, rshade, gshade, bshade):
+        
+        self.filename = filename
+        self.width = width
+        self.height = height
+        self.res = res
 
-    files = []
-    for file in listdir():
-        if file.endswith('.' + extension):
-            files.append(file)
-
-    if len(files) == 0:
-        print("No files with the extension \"" + extension + "\" found.")
-        return False
-
-    return files[get_choice(files, "Please select a file")]
+        self.red = red
+        self.green = green
+        self.blue = blue
+        self.rshade = rshade
+        self.gshade = gshade
+        self.bshade = bshade
