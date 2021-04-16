@@ -14,9 +14,9 @@ def main():
         choice = get_choice(["Generate a set", "Render a set", "Quit"], "What would you like to do?")
 
         if choice == 0:
-            generate__single_set()
+            generate_single_set()
         elif choice == 1:
-            ui_renderer()
+            render_single_set()
         else:
             print("Thank you for using the Fractal Set Generator & Renderer!")
             quit()
@@ -38,64 +38,82 @@ def generate_single_set():
     print("Width auto-set to " + str(width) + ".")
 
     res = get_number("Resolution (0 checks one pixel at a time, 1 checks 4, 2 checks 9, ...)", bound=1079)
+
     if set_type == 1:
         c = get_complex("C value")
+    else:
+        c = None
+
     exponent = get_number("Exponent", use_float=True)
 
     filename = get_string("File to save set to")
-    target = TextWrapperWriter(filename, width, height, xmin, xmax, ymin, ymax, res)
+    target = TextWrapperWriter(filename, width, height, xmin, xmax, ymin, ymax, res, c, exponent)
     
     set_function(target)
 
 
-def generate_mandelbrot_set(target)
+def generate_mandelbrot_set(target):
 
     x = 0
-    while x <= width:
+    while x <= target.width:
         y = 0
-        while y <= height:
+        while y <= target.height:
             c = to_complex(x, y, target)
-            in_set = is_in_mandelbrot_set(0, exponent, c, 0)
+
+            in_set = is_in_mandelbrot_set(0, target.exponent, c, 0)
+
             if in_set:
                 target.write_pixel(x, y, in_set)
-            print(str(int((x / (width + 1)) * 100)) + "%", end='\r')
+            print(str(int((x / (target.width + 1)) * 100)) + "%", end='\r')
             y += (1 + target.res)
         x += (1 + target.res)
 
-    elif set_type == 1:
-        x = 0
-        while x <= width:
-            y = 0
-            while y <= height:
-                z = to_complex(x, y, target)
-                in_set = is_in_julia_set(z, exponent, c, 0)
-                if in_set:
-                    target.write_pixel(x, y, in_set)
-                print(str(int((x / (width + 1)) * 100)) + "%", end='\r')
 
-                y += (1 + target.res)
-            x += (1 + target.res)
+def generate_julia_set(target):
 
-    elif set_type == 2:
-        x = 0
-        while x <= width:
-            y = 0
-            while y <= height:
-                c = to_complex(x, y, target)
-                in_set = is_in_burning_ship(0, exponent, c, 0)
-                if in_set:
-                    target.write_pixel(x, y, in_set)
-                print(str(int((x / (width + 1)) * 100)) + "%", end='\r')
+    x = 0
+    while x <= target.width:
+        y = 0
+        while y <= target.height:
+            z = to_complex(x, y, target)
 
-                y += (1 + target.res)
-            x += (1 + target.res)    
+            in_set = is_in_julia_set(z, target.exponent, target.c, 0)
 
+            if in_set:
+                target.write_pixel(x, y, in_set)
+            print(str(int((x / (target.width + 1)) * 100)) + "%", end='\r')
+            y += (1 + target.res)
+        x += (1 + target.res)
 
-def to_complex(x, y, target):
     
-    real = (((target.xmax - target.xmin) / target.width) * x) + target.xmin
-    imaginary = (((target.ymin - target.ymax) / target.height) * y) + target.ymax
-    return complex(real, imaginary)
+def generate_burning_ship(target):
+
+    x = 0
+    while x <= target.width:
+        y = 0
+        while y <= target.height:
+            c = to_complex(x, y, target)
+
+            in_set = is_in_burning_ship(0, target.exponent, c, 0)
+
+            if in_set:
+                target.write_pixel(x, y, in_set)
+            print(str(int((x / (target.width + 1)) * 100)) + "%", end='\r')
+            y += (1 + target.res)
+        x += (1 + target.res)
+        
+
+def is_in_mandelbrot_set(z, exponent, c, depth):
+    
+    # https://en.wikipedia.org/wiki/Mandelbrot_set#Computer_drawings
+    result = z ** exponent + c
+    if (z.real ** 2 + z.imag ** 2 <= 4) and depth < 900:
+        return(is_in_mandelbrot_set(result, exponent, c, depth + 1))
+    else:
+        if depth < 900:
+            return depth
+        else:
+            return False
 
 
 def is_in_julia_set(z, exponent, c, depth):
@@ -104,19 +122,6 @@ def is_in_julia_set(z, exponent, c, depth):
     result = z ** exponent + c
     if (result.real ** 2 + result.imag ** 2 <= 4) and depth < 900:
         return(is_in_julia_set(result, exponent, c, depth + 1))
-    else:
-        if depth < 900:
-            return depth
-        else:
-            return False
-
-
-def is_in_mandelbrot_set(z, exponent, c, depth):
-    
-    # https://en.wikipedia.org/wiki/Mandelbrot_set#Computer_drawings
-    result = z ** exponent + c
-    if (z.real ** 2 + z.imag ** 2 <= 4) and depth < 900:
-        return(is_in_mandelbrot_set(result, exponent, c, depth + 1))
     else:
         if depth < 900:
             return depth
@@ -137,7 +142,7 @@ def is_in_burning_ship(z, exponent, c, depth):
             return False
 
 
-def ui_renderer():
+def render_single_set():
 
     file = get_file('set')
     data = TextWrapperReader(file)
@@ -171,6 +176,7 @@ def render_set(data, red, green, blue, rshade, gshade, bshade, interactive=True)
         window.title(data.filename)
         canvas = Canvas(window, bg='#000000', width=data.width, height=data.height)
         canvas.pack()
+        
 
         def motion(event):
             x, y = event.x, event.y
