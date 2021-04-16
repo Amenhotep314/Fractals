@@ -5,9 +5,8 @@ build
 dist
 venv
 
-*.exe
+*.class
+*.json
 *.png
 *.pyc
 *.set
-*.spec
-*.zip
