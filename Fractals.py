@@ -59,10 +59,10 @@ def generate_single_set():
 
 def generate_mandelbrot_set(target):
 
-    x = 0
-    while x <= target.width:
-        y = 0
-        while y <= target.height:
+    y = 0
+    while y <= target.height:
+        x = 0
+        while x <= target.width:
             c = to_complex(x, y, target)
 
             in_set = is_in_mandelbrot_set(0, target.exponent, c, 0)
@@ -70,16 +70,16 @@ def generate_mandelbrot_set(target):
             if in_set:
                 target.write_pixel(x, y, in_set)
             print(str(int((x / (target.width + 1)) * 100)) + "%", end='\r')
-            y += (1 + target.res)
-        x += (1 + target.res)
+            x += (1 + target.res)
+        y += (1 + target.res)
 
 
 def generate_julia_set(target):
 
-    x = 0
-    while x <= target.width:
-        y = 0
-        while y <= target.height:
+    y = 0
+    while y <= target.height:
+        x = 0
+        while x <= target.width:
             z = to_complex(x, y, target)
 
             in_set = is_in_julia_set(z, target.exponent, target.c, 0)
@@ -87,16 +87,16 @@ def generate_julia_set(target):
             if in_set:
                 target.write_pixel(x, y, in_set)
             print(str(int((x / (target.width + 1)) * 100)) + "%", end='\r')
-            y += (1 + target.res)
-        x += (1 + target.res)
+            x += (1 + target.res)
+        y += (1 + target.res)
 
     
 def generate_burning_ship(target):
 
-    x = 0
-    while x <= target.width:
-        y = 0
-        while y <= target.height:
+    y = 0
+    while y <= target.height:
+        x = 0
+        while x <= target.width:
             c = to_complex(x, y, target)
 
             in_set = is_in_burning_ship(0, target.exponent, c, 0)
@@ -104,8 +104,8 @@ def generate_burning_ship(target):
             if in_set:
                 target.write_pixel(x, y, in_set)
             print(str(int((x / (target.width + 1)) * 100)) + "%", end='\r')
-            y += (1 + target.res)
-        x += (1 + target.res)
+            x += (1 + target.res)
+        y += (1 + target.res)
         
 
 def is_in_mandelbrot_set(z, exponent, c, depth):
