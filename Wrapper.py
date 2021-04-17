@@ -1,3 +1,6 @@
+from PIL import Image, ImageDraw
+
+
 class TextWrapperReader():
 
     def __init__(self, filename):
@@ -92,3 +95,6 @@ class ImageWrapper():
         self.rshade = rshade
         self.gshade = gshade
         self.bshade = bshade
+
+        self.image = Image.new("RGB", (self.width, self.height))
+        self.draw = ImageDraw.Draw(self.image)

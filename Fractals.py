@@ -1,6 +1,9 @@
-from tkinter import Tk, Canvas
+import numpy
+
 from random import randint
-from PIL import Image, ImageDraw
+from stl import mesh
+from tkinter import Tk, Canvas
+
 
 from Util import *
 from Wrapper import *
@@ -11,12 +14,14 @@ def main():
     print("\nWelcome to Fractal Set Generator & Renderer")
 
     while True:
-        choice = get_choice(["Generate a set", "Render a set", "Quit"], "What would you like to do?")
+        choice = get_choice(["Generate a set", "Render a set to an image", "Render a set to a 3D model", "Quit"], "What would you like to do?")
 
         if choice == 0:
             generate_single_set()
         elif choice == 1:
             render_single_set()
+        elif choice == 2:
+            render_stl()
         else:
             print("Thank you for using the Fractal Set Generator & Renderer!")
             quit()
@@ -166,10 +171,7 @@ def render_single_set():
     render_set(data, red, green, blue, rshade, gshade, bshade)
 
 
-def render_set(data, red, green, blue, rshade, gshade, bshade, interactive=True):
-
-    image = Image.new("RGB", (data.width, data.height))
-    draw = ImageDraw.Draw(image)
+def render_set(data, target, interactive=True):
 
     if interactive:
         window = Tk()
@@ -177,7 +179,6 @@ def render_set(data, red, green, blue, rshade, gshade, bshade, interactive=True)
         canvas = Canvas(window, bg='#000000', width=data.width, height=data.height)
         canvas.pack()
         
-
         def motion(event):
             x, y = event.x, event.y
             print(to_complex(x, y, data))
@@ -241,6 +242,19 @@ def render_set(data, red, green, blue, rshade, gshade, bshade, interactive=True)
     if interactive:
         window.mainloop()
 
+
+def render_stl():
+
+    # https://micronote.tech/2020/12/Generating-STL-Models-with-Python/
+    file = get_file('set')
+    data = TextWrapperReader(file)
+
+    vertices = data.pixels
+    np_vertices = numpy.array(vertices)
+    faces = []
+    print(vertices[:5])
+
+    # for i in range(len(vertices)):
 
 if __name__ == "__main__":
     main()
