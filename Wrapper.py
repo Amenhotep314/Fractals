@@ -98,3 +98,30 @@ class ImageWrapper():
 
         self.image = Image.new("RGB", (self.width, self.height))
         self.draw = ImageDraw.Draw(self.image)
+
+    
+    def write_pixel(self, x, y, color):
+
+        r = self.calculate_shade(self.red, self.rshade, color)
+        g = self.calculate_shade(self.green, self.gshade, color)
+        b = self.calculate_shade(self.blue, self.bshade, color)
+        fill_color = '#' + format(r, '02x') + format(g, '02x') + format(b, '02x')
+        self.draw.rectangle([x, y, x+self.res, y+self.res], fill=fill_color, outline=fill_color)
+        return fill_color
+
+
+    def calculate_shade(self, choice, chosen_shade, color):
+
+        if choice == 0:
+            return 255 - color
+        if choice == 1:
+            return color
+        if choice == 2:
+            return chosen_shade
+        if choice == 3:
+            return 0
+
+
+    def save_image(self):
+
+        self.image.save(self.filename.replace('.set', '.png'))

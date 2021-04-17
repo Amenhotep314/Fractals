@@ -168,7 +168,9 @@ def render_single_set():
     if blue == 2:
         bshade = get_number("Shade", bound=255)
 
-    render_set(data, red, green, blue, rshade, gshade, bshade)
+    target = ImageWrapper(file, data.width, data.height, data.res, red, green, blue, rshade, gshade, bshade)
+
+    render_set(data, target)
 
 
 def render_set(data, target, interactive=True):
@@ -195,39 +197,12 @@ def render_set(data, target, interactive=True):
     for i, pixel in enumerate(data.pixels):
         x = pixel[0]
         y = pixel[1]
-        color = (-255 / (max_depth ** 2)) * ((pixel[2] - max_depth) ** 2) + 255
+        color = int((-255 / (max_depth ** 2)) * ((pixel[2] - max_depth) ** 2) + 255)
 
-        if red == 0:
-            r = 255 - int(color)
-        if red == 1:
-            r = int(color)
-        if red == 2:
-            r = rshade
-        if red == 3:
-            r = 0
+        fill_color = target.write_pixel(x, y, color)
 
-        if green == 0:
-            g = 255 - int(color)
-        if green == 1:
-            g = int(color)
-        if green == 2:
-            g = gshade
-        if green == 3:
-            g = 0
-
-        if blue == 0:
-            b = 255 - int(color)
-        if blue == 1:
-            b = int(color)
-        if blue == 2:
-            b = bshade
-        if blue == 3:
-            b = 0
-
-        fill_color = '#' + format(r, '02x') + format(g, '02x') + format(b, '02x')
         if interactive:
             canvas.create_rectangle(x, y, x+res, y+res, fill=fill_color, outline=fill_color)
-        draw.rectangle([x, y, x+res, y+res], fill=fill_color, outline=fill_color)
         print(str(int((i / (len(data.pixels) - 1)) * 100)) + "%", end='\r')
 
     # signature = TextWrapperReader("signature.set")
@@ -238,7 +213,8 @@ def render_set(data, target, interactive=True):
     #     y = pixel[1]
     #     draw.rectangle([x+xorigin, y+yorigin, x+xorigin, y+yorigin], fill='#FFFFFF', outline='#FFFFFF')
 
-    image.save(data.filename.replace('.set', '.png'))
+    target.save_image()
+
     if interactive:
         window.mainloop()
 
