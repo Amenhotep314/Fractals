@@ -69,7 +69,7 @@ def generate_mandelbrot_set(target):
 
             if in_set:
                 target.write_pixel(x, y, in_set)
-            print(str(int((x / (target.width + 1)) * 100)) + "%", end='\r')
+            print(str(int((y / (target.height + 1)) * 100)) + "%", end='\r')
             x += (1 + target.res)
         y += (1 + target.res)
 
@@ -86,7 +86,7 @@ def generate_julia_set(target):
 
             if in_set:
                 target.write_pixel(x, y, in_set)
-            print(str(int((x / (target.width + 1)) * 100)) + "%", end='\r')
+            print(str(int((y / (target.height + 1)) * 100)) + "%", end='\r')
             x += (1 + target.res)
         y += (1 + target.res)
 
@@ -103,7 +103,7 @@ def generate_burning_ship(target):
 
             if in_set:
                 target.write_pixel(x, y, in_set)
-            print(str(int((x / (target.width + 1)) * 100)) + "%", end='\r')
+            print(str(int((y / (target.height + 1)) * 100)) + "%", end='\r')
             x += (1 + target.res)
         y += (1 + target.res)
         
