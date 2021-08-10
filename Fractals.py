@@ -1,7 +1,6 @@
 import numpy
 
 from random import randint
-from stl import mesh
 from tkinter import Tk, Canvas
 
 
