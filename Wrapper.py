@@ -3,14 +3,28 @@ from PIL import Image, ImageDraw
 
 class TextWrapperReader():
 
-    def __init__(self, filename):
+    def __init__(self, filename, chunk=None):
         
         self.filename = filename
         self.file = []
-        with open(filename, 'r') as source:
-            source_list = source.readlines()
-            for line in source_list:
-                self.file.append(line.strip())
+
+        if chunk:
+            with open(filename) as source:
+                for i, line in enumerate(source):
+                    if i < 15000000 * (chunk + 1):
+                        if i >= 15000000 * chunk:
+                            self.file.append(line)
+                    else:
+                        break
+                    
+            if not self.file:
+                return False
+
+        else:
+            with open(filename, 'r') as source:
+                source_list = source.readlines()
+                for line in source_list:
+                    self.file.append(line.strip())
 
         self.pixels = []
         for line in self.file:
