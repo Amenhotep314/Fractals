@@ -1,7 +1,6 @@
 from random import randint
 from tkinter import Tk, Canvas
 
-
 from Util import *
 from Wrapper import *
 
@@ -11,14 +10,12 @@ def main():
     print("\nWelcome to Fractal Set Generator & Renderer")
 
     while True:
-        choice = get_choice(["Generate a set", "Render a set to an image", "Render a set to a 3D model", "Quit"], "What would you like to do?")
+        choice = get_choice(["Generate a set", "Render a set to an image", "Quit"], "What would you like to do?")
 
         if choice == 0:
             generate_single_set()
         elif choice == 1:
             render_single_set()
-        elif choice == 2:
-            render_stl()
         else:
             print("Thank you for using the Fractal Set Generator & Renderer!")
             quit()
