@@ -25,7 +25,7 @@ class TextWrapperReader():
                     break
 
         if not self.pixels:
-            return False
+            return None
 
         self.width = self.read_meta(info, 'w')
         self.height = self.read_meta(info, 'h')
