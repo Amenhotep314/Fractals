@@ -1,5 +1,3 @@
-import numpy
-
 from random import randint
 from tkinter import Tk, Canvas
 
@@ -262,19 +260,6 @@ def render_set_chunkily(file, target):
         target.save_image()
 
 
-
-def render_stl():
-
-    # https://micronote.tech/2020/12/Generating-STL-Models-with-Python/
-    file = get_file('set')
-    data = TextWrapperReader(file)
-
-    vertices = data.pixels
-    np_vertices = numpy.array(vertices)
-    faces = []
-    print(vertices[:5])
-
-    # for i in range(len(vertices)):
-
 if __name__ == "__main__":
+
     main()
