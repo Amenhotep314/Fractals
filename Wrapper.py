@@ -3,52 +3,48 @@ from PIL import Image, ImageDraw
 
 class TextWrapperReader():
 
-    def __init__(self, filename, chunk=None):
+    def __init__(self, filename, chunk=0):
         
         self.filename = filename
-        self.file = []
-
-        if chunk:
-            with open(filename) as source:
-                for i, line in enumerate(source):
-                    if i < 15000000 * (chunk + 1):
-                        if i >= 15000000 * chunk:
-                            self.file.append(line)
-                    else:
-                        break
-                    
-            if not self.file:
-                return False
-
-        else:
-            with open(filename, 'r') as source:
-                source_list = source.readlines()
-                for line in source_list:
-                    self.file.append(line.strip())
-
         self.pixels = []
-        for line in self.file:
-            if '/d' in line:
-                x = int(self.read_meta(line, 'x'))
-                y = int(self.read_meta(line, 'y'))
-                depth = int(self.read_meta(line, 'd'))
-                self.pixels.append([x, y, depth])
 
-        info = self.file[0]
-        self.width = int(self.read_meta(info, 'w'))
-        self.height = int(self.read_meta(info, 'h'))
-        self.res = int(self.read_meta(info, 'r'))
+        with open(filename) as source:
+            for i, line in enumerate(source):
+                if i == 0:
+                    info = line
+                    continue
 
-        self.xmin = float(self.read_meta(info, 'xmin'))
-        self.xmax = float(self.read_meta(info, 'xmax'))
-        self.ymin = float(self.read_meta(info, 'ymin'))
-        self.ymax = float(self.read_meta(info, 'ymax'))
+                if i < 15000000 * (chunk + 1):
+                    if i >= 15000000 * chunk:
+                        self.pixels.append([
+                            self.read_meta(line, 'x'),
+                            self.read_meta(line, 'y'),
+                            self.read_meta(line, 'd')
+                        ])
+                else:
+                    break
+
+        if not self.pixels:
+            return False
+
+        self.width = self.read_meta(info, 'w')
+        self.height = self.read_meta(info, 'h')
+        self.res = self.read_meta(info, 'r')
+
+        self.xmin = self.read_meta(info, 'xmin', use_float=True)
+        self.xmax = self.read_meta(info, 'xmax', use_float=True)
+        self.ymin = self.read_meta(info, 'ymin', use_float=True)
+        self.ymax = self.read_meta(info, 'ymax', use_float=True)
 
     
-    def read_meta(self, line, tag):
+    def read_meta(self, line, tag, use_float=False):
 
         length = len(tag)
-        return line[line.index(tag) + length : line.index('/' + tag)]
+        try:
+            ans = line[line.index(tag) + length : line.index('/' + tag)]
+            return float(ans) if use_float else int(ans)
+        except:
+            return None
 
 
 class TextWrapperWriter():
