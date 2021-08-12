@@ -149,7 +149,7 @@ def is_in_burning_ship(z, exponent, c, depth):
 def render_single_set():
 
     file = get_file('set')
-    data = TextWrapperReader(file)
+    data = TextWrapperReader(file, chunk=0)
 
     rshade = 0
     gshade = 0
@@ -169,7 +169,12 @@ def render_single_set():
 
     target = ImageWrapper(file, data.width, data.height, data.res, red, green, blue, rshade, gshade, bshade)
 
-    render_set(data, target)
+    if(data.width * data.height > 15000000):
+        del data
+        print("Defaulting to chunk-based approach for enormous data set. No interactive view available.")
+        render_set_chunkily(file, target)
+    else:
+        render_set(data, target)
 
 
 def render_set(data, target, interactive=True):
@@ -216,6 +221,41 @@ def render_set(data, target, interactive=True):
 
     if interactive:
         window.mainloop()
+
+
+def render_set_chunkily(file, target):
+
+    max_depth = 0
+    incrementer = 0
+    data = TextWrapperReader(file, chunk=incrementer)
+    res = target.res
+
+    print("Calculating maximum recursion depth.")
+    while data:
+        for pixel in data.pixels:
+            if pixel[2] > max_depth:
+                max_depth = pixel[2]
+        del data
+        incrementer += 1
+        data = TextWrapperReader(file, chunk=incrementer)
+
+    incrementer = 0
+    data = TextWrapperReader(file, chunk=incrementer)
+
+    print("#\t%")
+    while data:
+        for i, pixel in enumerate(data.pixels):
+            x = pixel[0]
+            y = pixel[1]
+            color = int((-255 / (max_depth ** 2)) * ((pixel[2] - max_depth) ** 2) + 255)
+            target.write_pixel(pixel[0], pixel[1], color)
+            print(str(incrementer + 1) + '\t' + str(int((i / (len(data.pixels) - 1)) * 100)) + "%", end='\r')
+
+        del data
+        incrementer += 1
+        data = TextWrapperReader(file, chunk=incrementer)
+        target.save_image()
+
 
 
 def render_stl():
