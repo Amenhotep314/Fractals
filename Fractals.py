@@ -236,7 +236,7 @@ def render_set_chunkily(file, target):
         for i, pixel in enumerate(data.pixels):
             if pixel[2] > max_depth:
                 max_depth = pixel[2]
-        print(str(incrementer + 1) + '\t' + str(int((i / (len(data.pixels) - 1)) * 100)) + "%", end='\r')
+            print(str(incrementer + 1) + '\t' + str(int((i / (len(data.pixels) - 1)) * 100)) + "%", end='\r')
 
         del data
         incrementer += 1
