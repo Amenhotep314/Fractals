@@ -11,3 +11,4 @@ venv
 *.png
 *.pyc
 *.set
+*.spec
