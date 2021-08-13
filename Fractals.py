@@ -226,12 +226,12 @@ def render_set_chunkily(file, target):
     res = target.res
 
     print("Calculating maximum recursion depth.")
-    print("#\t%")
-    while data:
+    print("%\t#")
+    while data.pixels:
         for i, pixel in enumerate(data.pixels):
             if pixel[2] > max_depth:
                 max_depth = pixel[2]
-            print(str(incrementer + 1) + '\t' + str(int((i / (len(data.pixels) - 1)) * 100)) + "%", end='\r')
+            print(str(int((i / (len(data.pixels) - 1)) * 100)) + "%" + '\t' + str(incrementer + 1), end='\r')
 
         del data
         incrementer += 1
@@ -242,14 +242,14 @@ def render_set_chunkily(file, target):
     data = TextWrapperReader(file, chunk=incrementer)
 
     print("Rendering to image.")
-    print("#\t%")
-    while data:
+    print("%\t#")
+    while data.pixels:
         for i, pixel in enumerate(data.pixels):
             x = pixel[0]
             y = pixel[1]
             color = int((-255 / (max_depth ** 2)) * ((pixel[2] - max_depth) ** 2) + 255)
             target.write_pixel(pixel[0], pixel[1], color)
-            print(str(incrementer + 1) + '\t' + str(int((i / (len(data.pixels) - 1)) * 100)) + "%", end='\r')
+            print(str(int((i / (len(data.pixels) - 1)) * 100)) + "%" + '\t' + str(incrementer + 1), end='\r')
 
         del data
         incrementer += 1

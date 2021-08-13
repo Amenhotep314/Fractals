@@ -7,7 +7,8 @@ class TextWrapperReader():
         
         self.filename = filename
         self.pixels = []
-
+        
+        print("Loading...", end='\r')
         with open(filename) as source:
             for i, line in enumerate(source):
                 if i == 0:
@@ -23,9 +24,6 @@ class TextWrapperReader():
                         ])
                 else:
                     break
-
-        if not self.pixels:
-            return None
 
         self.width = self.read_meta(info, 'w')
         self.height = self.read_meta(info, 'h')
