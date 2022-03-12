@@ -23,8 +23,8 @@ def main():
 
 def generate_single_set():
 
-    set_types = [generate_mandelbrot_set, generate_julia_set, generate_burning_ship]
-    set_type = get_choice(["Mandelbrot set", "Julia set", "Burning ship"], "Set type")
+    set_types = [generate_mandelbrot_set, generate_julia_set, generate_burning_ship, generate_tricorn]
+    set_type = get_choice(["Mandelbrot set", "Julia set", "Burning ship", "Tricorn"], "Set type")
     set_function = set_types[set_type]
 
     xmin = get_number("Minimum x value", use_float=True, require_positive=False)
@@ -102,6 +102,23 @@ def generate_burning_ship(target):
         y += (1 + target.res)
         
 
+def generate_tricorn(target):
+
+    y = 0
+    while y <= target.height:
+        x = 0
+        while x <= target.width:
+            c = to_complex(x, y, target)
+
+            in_set = is_in_tricorn(0, target.exponent, c, 0)
+
+            if in_set:
+                target.write_pixel(x, y, in_set)
+            print(str(int((y / (target.height + 1)) * 100)) + "%", end='\r')
+            x += (1 + target.res)
+        y += (1 + target.res)
+
+
 def is_in_mandelbrot_set(z, exponent, c, depth):
     
     # https://en.wikipedia.org/wiki/Mandelbrot_set#Computer_drawings
@@ -134,6 +151,18 @@ def is_in_burning_ship(z, exponent, c, depth):
     result = (complex(abs(z.real), abs(z.imag))) ** exponent + c
     if (z.real ** 2 + z.imag ** 2 <= 4) and depth < 900:
         return(is_in_burning_ship(result, exponent, c, depth + 1))
+    else:
+        if depth < 900:
+            return depth
+        else:
+            return False
+
+
+def is_in_tricorn(z, exponent, c, depth):
+
+    result = complex_conjugate(z) ** exponent + c
+    if (z.real ** 2 + z.imag ** 2 <= 4) and depth < 900:
+        return(is_in_tricorn(result, exponent, c, depth + 1))
     else:
         if depth < 900:
             return depth
