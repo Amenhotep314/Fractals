@@ -80,3 +80,10 @@ def to_complex(x, y, target):
     real = (((target.xmax - target.xmin) / target.width) * x) + target.xmin
     imaginary = (((target.ymin - target.ymax) / target.height) * y) + target.ymax
     return complex(real, imaginary)
+
+
+def complex_conjugate(z):
+
+    real = z.real
+    imag = z.imag * -1
+    return complex(real, imag)
