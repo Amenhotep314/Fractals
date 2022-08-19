@@ -25,6 +25,7 @@ def generate_single_set():
 
     set_types = [generate_mandelbrot_set, generate_julia_set, generate_burning_ship, generate_tricorn]
     set_type = get_choice(["Mandelbrot set", "Julia set", "Burning ship", "Tricorn"], "Set type")
+    global set_function
     set_function = set_types[set_type]
 
     xmin = get_number("Minimum x value", use_float=True, require_positive=False)
@@ -43,11 +44,11 @@ def generate_single_set():
     else:
         c = None
 
-    exponent = get_number("Exponent", use_float=True)
+    exponent = get_number("Exponent", use_float=True, require_positive=False)
 
     filename = get_string("File to save set to")
     target = TextWrapperWriter(filename, width, height, xmin, xmax, ymin, ymax, res, c, exponent)
-    
+
     set_function(target)
 
 
@@ -84,7 +85,7 @@ def generate_julia_set(target):
             x += (1 + target.res)
         y += (1 + target.res)
 
-    
+
 def generate_burning_ship(target):
 
     y = 0
@@ -100,7 +101,7 @@ def generate_burning_ship(target):
             print(str(int((y / (target.height + 1)) * 100)) + "%", end='\r')
             x += (1 + target.res)
         y += (1 + target.res)
-        
+
 
 def generate_tricorn(target):
 
@@ -120,7 +121,7 @@ def generate_tricorn(target):
 
 
 def is_in_mandelbrot_set(z, exponent, c, depth):
-    
+
     # https://en.wikipedia.org/wiki/Mandelbrot_set#Computer_drawings
     result = z ** exponent + c
     if (z.real ** 2 + z.imag ** 2 <= 4) and depth < 900:
@@ -133,7 +134,7 @@ def is_in_mandelbrot_set(z, exponent, c, depth):
 
 
 def is_in_julia_set(z, exponent, c, depth):
-    
+
     # https://en.wikipedia.org/wiki/Julia_set#Pseudocode_for_normal_Julia_sets
     result = z ** exponent + c
     if (result.real ** 2 + result.imag ** 2 <= 4) and depth < 900:
@@ -146,7 +147,7 @@ def is_in_julia_set(z, exponent, c, depth):
 
 
 def is_in_burning_ship(z, exponent, c, depth):
-    
+
     # https://en.wikipedia.org/wiki/Burning_Ship_fractal
     result = (complex(abs(z.real), abs(z.imag))) ** exponent + c
     if (z.real ** 2 + z.imag ** 2 <= 4) and depth < 900:
@@ -208,17 +209,31 @@ def render_set(data, target, interactive=True):
         window.title(data.filename)
         canvas = Canvas(window, bg='#000000', width=data.width, height=data.height)
         canvas.pack()
-        
+
         def motion(event):
             x, y = event.x, event.y
             print(to_complex(x, y, data))
 
+        def click(event):
+            x, y = event.x, event.y
+            b_left = to_complex(x, y, data)
+            t_right = to_complex(x+(data.width/100), y+(target.height/100), data)
+            writer = TextWrapperWriter('.tmp', data.width, data.height, b_left.real, t_right.real, b_left.imag, t_right.imag, data.res, data.c, data.exponent)
+            generate_mandelbrot_set(writer)
+            new_data = TextWrapperReader('.tmp.set')
+            new_target = ImageWrapper('.tmp.set', new_data.width, new_data.height, new_data.res, target.red, target.green, target.blue, target.rshade, target.gshade, target.bshade)
+            render_set(new_data, new_target)
+
         window.bind('<Motion>', motion)
+        canvas.bind('<Button-1>', click)
 
     max_depth = 0
     for pixel in data.pixels:
-        if pixel[2] > max_depth:
-            max_depth = pixel[2]
+        try:
+            if pixel[2] > max_depth:
+                max_depth = pixel[2]
+        except:
+            pass
 
     res = data.res
 

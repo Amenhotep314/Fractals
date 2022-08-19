@@ -4,10 +4,10 @@ from PIL import Image, ImageDraw
 class TextWrapperReader():
 
     def __init__(self, filename, chunk=0):
-        
+
         self.filename = filename
         self.pixels = []
-        
+
         print("Loading...", end='\r')
         with open(filename) as source:
             for i, line in enumerate(source):
@@ -34,7 +34,10 @@ class TextWrapperReader():
         self.ymin = self.read_meta(info, 'ymin', use_float=True)
         self.ymax = self.read_meta(info, 'ymax', use_float=True)
 
-    
+        self.c = self.read_meta(info, 'c', use_float=True)
+        self.exponent = self.read_meta(info, 'exponent', use_float=True)
+
+
     def read_meta(self, line, tag, use_float=False):
 
         length = len(tag)
@@ -71,16 +74,18 @@ class TextWrapperWriter():
         self.write_meta(self.xmax, "xmax", newline=False)
         self.write_meta(self.ymin, "ymin", newline=False)
         self.write_meta(self.ymax, "ymax", newline=False)
+        self.write_meta(self.c, "c", newline=False)
+        self.write_meta(self.exponent, "exponent", newline=False)
         self.write_meta(self.res, "r")
 
-    
+
     def write_pixel(self, x, y, depth):
 
         self.write_meta(str(x), 'x', newline=False)
         self.write_meta(str(y), 'y', newline=False)
         self.write_meta(str(depth), 'd')
 
-    
+
     def write_meta(self, item, tag, newline=True):
 
         self.file.write(tag + str(item) + '/' + tag)
@@ -91,7 +96,7 @@ class TextWrapperWriter():
 class ImageWrapper():
 
     def __init__(self, filename, width, height, res, red, green, blue, rshade, gshade, bshade):
-        
+
         self.filename = filename
         self.width = width
         self.height = height
@@ -107,7 +112,7 @@ class ImageWrapper():
         self.image = Image.new("RGB", (self.width, self.height))
         self.draw = ImageDraw.Draw(self.image)
 
-    
+
     def write_pixel(self, x, y, color):
 
         r = self.calculate_shade(self.red, self.rshade, color)
